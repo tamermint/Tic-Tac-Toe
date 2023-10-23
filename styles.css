@@ -4,3 +4,8 @@
     padding: 0;
     background-color: #D9FAFA;
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+}
