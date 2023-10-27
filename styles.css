@@ -1,11 +1,76 @@
+:root {
+    --gameContainerwidth: 500px;
+    --cellWidth: calc(var(--gameContainerwidth) / 3);
+}
+
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     background-color: #D9FAFA;
+    scroll-behavior: smooth;
+    font-family: 'Rokkitt', serif;
+    
 }
 
 body {
     display: flex;
     flex-direction: column;
+}
+
+.cell {
+    width: var(--cellWidth);
+    height: var(--cellWidth);
+    border: 1px solid black;
+    cursor: pointer;
+    font-size: 10em;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#game-options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 11.5rem;
+    margin: 2rem;
+    padding: 1.2rem;
+    font-size: 20px;
+}
+
+select {
+    font-size: 20px;
+    border-radius: 10px;
+}
+
+#game-container {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    width: var(--gameContainerwidth);
+    margin: auto;
+}
+
+#game-stop-start {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4em;
+    margin: 1rem;
+    padding: 2rem;
+}
+
+footer {
+    position: flex-end;
+    justify-content: center;
+    align-self: center;
+    font-size: 1.5rem;
+}
+
+button {
+    padding: 2em;
+    border-radius: 20px;
+    margin-left: 20px;
+    font-size: 20px;
+    cursor: pointer;
 }
