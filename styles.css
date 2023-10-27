@@ -3,7 +3,6 @@
     --cellWidth: calc(var(--gameContainerwidth) / 3);
 }
 
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -11,7 +10,12 @@
     background-color: #D9FAFA;
     scroll-behavior: smooth;
     font-family: 'Rokkitt', serif;
-    
+}
+
+h1 {
+    font-size: 5em;
+    text-align: center;
+    vertical-align: middle;
 }
 
 body {
@@ -42,7 +46,9 @@ body {
 select {
     font-size: 20px;
     border-radius: 10px;
+    outline: none;
 }
+
 
 #game-container {
     display: grid;
@@ -71,6 +77,7 @@ button {
     padding: 2em;
     border-radius: 20px;
     margin-left: 20px;
+    margin-right: 20px;
     font-size: 20px;
     cursor: pointer;
 }
