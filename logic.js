@@ -7,4 +7,19 @@
         //  - a function to implement the type of AI based on player choice (minimax algorithm)
 //Now each line may have more functions
 
+(function playerChoice() { //function to take a player's choice and append player choice (i.e. X or O) to any game cell
+    const gameContainer = document.getElementById('game-container');
+
+    gameContainer.addEventListener('click', function(event){     //attach event listener to the parent and then delegate based on area clicked
+        if(event.target.classList.contains('cell')) {    //check if where the user has clicked is indeed a cell
+            const cell = event.target;
+
+            //check if cell is empty before placing a player's choice
+            if(cell.textContent === ''){
+                const playChoice = document.getElementById('player').value;
+                cell.textContent = playChoice;
+            }
+        }
+    })
+})();
 
