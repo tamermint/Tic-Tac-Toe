@@ -1,4 +1,4 @@
-//The logic of this code is to emulate a game of tic-tac-toe. It will be a game
+//The logic of this code is to emulate a game of tic-tac-toe against an AI. It will be a game
 //of three rounds. Best of three out of 5 rounds wins
 //Code plan - a function to receive and return the choice of the player.
         //  - a function to receive and return the choice of ai mode
@@ -48,6 +48,54 @@ function minimax(currentBoard, player, difficultyScore) {
             return {score: 0};
         }
     }
+    const moves = [];       //empty array to store each state of the board
+
+    //for each space in the availCells array
+    for(let i = 0; i < availCells.length; i++){
+        //create a move{} object for each move
+        var move = {};
+
+        //store index of the current empty spot in move{}
+        move.index = currentBoard[availCells[i]];
+
+        //set empty spot to the current player
+        currentBoard[availCells[i]] = player;
+
+        //if player == human player, store result of minimax(currentBoard, player, difficultyScore) of the opponent in a move.score
+        if(player == 'humanPlayer') {
+            var result = minimax(currentBoard, 'aiPlayer',);
+            move.score = result.score;
+        } 
+
+        //else store result of minimax(currentBoard, player, difficultyScore) in move.score
+        else {
+            var result = minimax(currentBoard, 'humanPlayer',);
+            move.score = result.score;
+        }
+
+        //reset the spot to empty
+        currentBoard[availCells[i]] = move.index;
+
+        //push move into moves[]
+        moves.push(move);
+
+        //use a bestMove variable to evaluate the best move
+        let bestMove;
+
+        if(player === 'aiPlayer')
+            bestMove = -10000
+            for(let i = 0; i < moves.length; i++) {
+                if (moves[i].score > bestMove) 
+                    bestMove = moves[i].score
+            }
+        if (player === 'humanPlayer')
+            bestMove = 10000
+            for(let i = 0; i < moves.length; i++) {
+                if (moves[i].score < bestMove)
+                    bestMove = moves[i].score
+            }
+    }
+    return moves[bestMove];
 }
 
 function aiChoice(currentBoard) { // takes the current board after the player has made the choice, and based on AI difficulty level, run minimax on available spots and fill in the choice
