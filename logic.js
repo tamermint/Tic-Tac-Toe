@@ -18,6 +18,7 @@
             if(cell.textContent === ''){
                 const playChoice = document.getElementById('player').value;
                 cell.textContent = playChoice;
+                
             }
         }
     })
