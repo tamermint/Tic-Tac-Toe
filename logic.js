@@ -39,10 +39,10 @@ function minimax(currentBoard, player) {         //function to determine the bes
     //loop through all available cells in board
     let availCells = currentBoard.filter(cell => cell != 'X' && cell != 'O');
     
-    if(winConditions(currentBoard, player) && player == 'aiPlayer'){
+    if(winConditions(currentBoard, 'aiPlayer')){
         return {score: 10};
     }
-    else if(winConditions(currentBoard, player) && player == 'humanPlayer') {
+    else if(winConditions(currentBoard, 'humanPlayer')) {
         return {score: -10};
         }
     else if(availCells.length === 0) {
@@ -64,13 +64,13 @@ function minimax(currentBoard, player) {         //function to determine the bes
 
         //if player == human player, store result of minimax(currentBoard, player, difficultyScore) of the opponent in a move.score
         if(player == 'humanPlayer') {
-            let result = minimax(currentBoard, 'aiPlayer',);
+            let result = minimax(currentBoard, 'aiPlayer');
             move.score = result.score;
         } 
 
         //else store result of minimax(currentBoard, player, difficultyScore) in move.score
         else {
-            let result = minimax(currentBoard, 'humanPlayer',);
+            let result = minimax(currentBoard, 'humanPlayer');
             move.score = result.score;
         }
 
@@ -99,12 +99,14 @@ function minimax(currentBoard, player) {         //function to determine the bes
     return moves[bestMove];
 }
 
-function aiChoice(currentBoard) { // takes the current board after the player has made the choice, and based on AI difficulty level, run minimax on available spots and fill in the choice
+function aiPlayerChoice(currentBoard) { // takes the current board after the player has made the choice, and based on AI difficulty level, run minimax on available spots and fill in the choice
     const aiPlayerMode = determineAiPlayerMode(aiPlayer); 
     const aiDifficultyLevel = document.getElementById('ai').value;
+    const gameContainer = document.getElementById('game-container');
 
     if(aiDifficultyLevel == 'easy') {
-        //the player wins 4 / 5 games
+        const randomInput = () => Math.floor(Math.random() * (8 - 0 + 1)) + 0;
+
     }
     else if(aiDifficultyLevel == 'medium') {
         //the player wins 2 / 5 games
