@@ -16,7 +16,7 @@ function playerChoice() { //function to take a player's choice and append player
     const gameContainer = document.getElementById('game-container');
 
     gameContainer.addEventListener('click', function(event){     //attach event listener to the parent and then delegate based on area clicked
-        if(event.target.classList.contains('cell')) {    //check if where the user has clicked is indeed a cell
+        if(event.target.classList.contains('cell')) {            //check if where the user has clicked is indeed a cell
             const cell = event.target;
 
             //check if cell is empty before placing a player's choice
@@ -62,7 +62,7 @@ function minimax(currentBoard, player) {         //function to determine the bes
         //set empty spot to the current player
         currentBoard[availCells[i]] = player;
 
-        //if player == human player, store result of minimax(currentBoard, player, difficultyScore) of the opponent in a move.score
+        //if player == human player, store result of minimax(currentBoard, player) of the opponent in a move.score
         if(player == 'humanPlayer') {
             let result = minimax(currentBoard, 'aiPlayer');
             move.score = result.score;
@@ -106,10 +106,25 @@ function aiPlayerChoice(currentBoard) { // takes the current board after the pla
 
     if(aiDifficultyLevel == 'easy') {
         const randomInput = () => Math.floor(Math.random() * (8 - 0 + 1)) + 0;
+        const randomIndex = randomInput();
+        let availCells = currentBoard.filter(cell => cell != 'X' && cell != 'O');
+        for(let i = 0; i < availCells.length; i++) {
+            if(availCells[randomIndex] == '') {
+                availCells[randomIndex] == aiPlayerMode;
+            }
+            else if(availCells.length == 0 && winConditions(currentBoard, 'humanPlayer')) {
+                humanScore += 1;
+                window.alert("You win this round!");
+            }
+            else if(availCells.length == 0 && winConditions(currentBoard, 'aiPlayer')) {
+                aiScore += 1;
+                window.alert("AI wins this round!");
+            }
+        }
 
     }
     else if(aiDifficultyLevel == 'medium') {
-        //the player wins 2 / 5 games
+        //use a depth-limited minimax
     }
     else {
         //the player is unable to win or results in tie
