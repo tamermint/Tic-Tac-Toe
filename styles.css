@@ -49,6 +49,15 @@ select {
     outline: none;
 }
 
+#score-board {
+    display: flex;
+    justify-content: center;
+    align-content: space-between;
+    font-size: larger;
+    gap: 12em;
+    margin: 1.5em;
+}
+
 
 #game-container {
     display: grid;

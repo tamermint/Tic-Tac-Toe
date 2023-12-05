@@ -14,34 +14,13 @@ let aiScore = 0;             //track score of AI
 let gameRounds = 0;          //to keep a track of the game round
 let winScore = 5;            //to track whether human has won or AI has won
 
-function playerChoice() { //function to determine player's choice i.e. play as X or play as O
-    // const gameContainer = document.getElementById('game-container');
-    const playChoice = document.getElementById('player').value;
 
-    /* gameContainer.addEventListener('click', function(event){     //attach event listener to the parent and then delegate based on area clicked
-        if(event.target.classList.contains('cell')) {            //check if where the user has clicked is indeed a cell
-            const cell = event.target;
+const humanPlayer = document.getElementById('player').value;      //get value from user selection 
+const aiPlayer = (humanPlayer == 'X' ? 'O' : 'X');                //set aiPlayer 
 
-            //check if cell is empty before placing a player's choice
-            if(cell.textContent === ''){
-                
-                cell.textContent = playChoice;
-            }
-        }
-    }) */
-    return playChoice;
-}
 
-function determineAiPlayerMode() {       //check what the human is playing as choose the opposite 
-    const playChoice = playerChoice();
-    return aiPlayer = (playChoice == 'X' ? 'O' : 'X');   
-}
-
-function minimaxWithDepth(currentBoard, player, depth) {
+function minimaxWithDepth(currentBoard, player, depth) {          //set up the minimax function with depth to control difficulty
     let availCells = currentBoard.filter(cell => cell != 'X' && cell != 'O');
-
-    const aiPlayer = determineAiPlayerMode();
-    const humanPlayer = playerChoice();
 
     if(winConditions(currentBoard, aiPlayer)) {
         return {score: 10};
@@ -105,7 +84,7 @@ function minimaxWithDepth(currentBoard, player, depth) {
 
 
 
-function winConditions(currentBoard, player) {
+function winConditions(currentBoard, player) {       //set the winning conditions for the board i.e. the cells 
     if (
         (currentBoard[0] == player && currentBoard[1] == player && currentBoard[2] == player) ||
         (currentBoard[3] == player && currentBoard[4] == player && currentBoard[5] == player) ||
@@ -121,26 +100,24 @@ function winConditions(currentBoard, player) {
     return false;
 }
 
-function checkTie(currentBoard, player) {
-    if(!winConditions(currentBoard, player)) {
-        currentBoard.every((cell => {
-            if(cell.value != '') {
-                cell.style.backgroundColor = 'blue';
-                window.alert("It's a tie!")
-            }
-        }))
+function checkTie(currentBoard, player) {           //check for whether the game is a tie
+    if(winConditions(currentBoard, player) == false) {
+        if(currentBoard.every((cell => cell.value != ''))) {
+            window.alert("It's a tie!")
+        }   
     }
 }
 
-function checkForWin() {
-    //check if player (ai or human) has won 3/5 games, if yes, declare them tournament winner and update game state to stop game
-    if(winScore - aiScore == 2) {
-        window.alert("AI wins the tournament!");
-        gameState = false;
+function checkForRoundWinner() {                     //check for winner for current round and update display on UI
+    if(winConditions(currentBoard, aiPlayer)) {
+        aiScore += 1;
+        const aiScoreDisplay = document.querySelector('#ai-score');
+        aiScoreDisplay.innerText = aiScore;
     }
-    else if(winScore - humanScore == 2) {
-        window.alert("Human wins the tournament!");
-        gameState = false;
+    if(winConditions(currentBoard, humanPlayer)) {
+        humanScore += 1;
+        const humanScoreDisplay = document.querySelector('#player-score');
+        humanScoreDisplay.innerText = humanScore;
     }
 }
 
