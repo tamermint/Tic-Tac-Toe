@@ -16,7 +16,14 @@ let winScore = 5;            //to track whether human has won or AI has won
 
 
 const humanPlayer = document.getElementById('player').value;      //get value from user selection 
-const aiPlayer = (humanPlayer == 'X' ? 'O' : 'X');                //set aiPlayer 
+const aiPlayer = (humanPlayer == 'X' ? 'O' : 'X');                //set aiPlayer
+const aiLevel = document.getElementById('ai').value; 
+
+function playerChoice() {
+    document.querySelector('#game-container').addEventListener('click', function(){
+        document.querySelectorAll('.cell').forEach(cell => cell.innerText = humanPlayer);
+    });
+}
 
 
 function minimaxWithDepth(currentBoard, player, depth) {          //set up the minimax function with depth to control difficulty
@@ -28,7 +35,7 @@ function minimaxWithDepth(currentBoard, player, depth) {          //set up the m
     else if(winConditions(currentBoard, humanPlayer)) {
         return {score: -10};
     }
-    else if(availCells.length === 0){
+    else if(availCells.length === 0 || depth === 0){
         return {score: 0};
     }
 
@@ -38,9 +45,9 @@ function minimaxWithDepth(currentBoard, player, depth) {          //set up the m
         
         var move = {};             //create a move object to store the move of each empty spot
 
-        move.index = currentBoard[availCells[i]];       //set index of the move to current empty spot
+        move.index = availCells[i];       //set index of the move to current empty spot
 
-        currentBoard[availCells[i]] = player;           //set the empty spot to the player
+        availCells[i] = player;           //set the empty spot to the player
 
         if(player == humanPlayer) {
             var result = minimaxWithDepth(currentBoard, aiPlayer, depth - 1)    //get the result of calling the minimax with depth if the opponent is human
@@ -52,7 +59,7 @@ function minimaxWithDepth(currentBoard, player, depth) {          //set up the m
         }
 
         //reset the board
-        currentBoard[availCells[i]] = move.index;
+        availCells[i] = move.index;
 
         //push the move into the moves array
         moves.push(move);
@@ -104,20 +111,41 @@ function checkTie(currentBoard, player) {           //check for whether the game
     if(winConditions(currentBoard, player) == false) {
         if(currentBoard.every((cell => cell.value != ''))) {
             window.alert("It's a tie!")
+            gameState = false;
         }   
     }
 }
 
+function restartGame() {           //resets the current game
+    const gameBoard = document.querySelectorAll('.cell');
+    gameBoard.forEach(cell => cell.innerText = '');
+}
+
+function newGame() {         //resets all counters and conditions to initial value and clears the board  
+    isWon = false;          //to check if win condition was acheived by either human/AI
+    gameState = true;       //to track state of game
+    humanScore = 0;          //track score of human
+    aiScore = 0;             //track score of AI
+    gameRounds = 0;          //to keep a track of the game round
+    winScore = 5;            //to track whether human has won or AI has won
+    restartGame();
+}
+
+
 function checkForRoundWinner() {                     //check for winner for current round and update display on UI
     if(winConditions(currentBoard, aiPlayer)) {
         aiScore += 1;
+        window.alert("AI wins this round!");
         const aiScoreDisplay = document.querySelector('#ai-score');
         aiScoreDisplay.innerText = aiScore;
+        restartGame();
     }
     if(winConditions(currentBoard, humanPlayer)) {
         humanScore += 1;
+        window.alert("Human wins this round!");
         const humanScoreDisplay = document.querySelector('#player-score');
         humanScoreDisplay.innerText = humanScore;
+        restartGame();
     }
 }
 
@@ -135,4 +163,6 @@ function gameController() {        //function to control game flow
     }
 }
 
+document.querySelector('#new-game').onClick = newGame();
+document.querySelector('#restart-game').onClick = restartGame();
 
