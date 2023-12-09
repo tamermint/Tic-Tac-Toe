@@ -3,23 +3,21 @@
 
 
 
-const gameState = true;     //to track state of game
 let humanScore = 0;          //track score of human
 let aiScore = 0;             //track score of AI
 let gameRounds = 0;          //to keep a track of the game round
 
 
 const currentBoardState = Array(9).fill('');                      //global variable to maintain game state
-const humanPlayer = document.getElementById('player').value;      //get value from user selection 
-const aiPlayer = (humanPlayer == 'X' ? 'O' : 'X');                //set aiPlayer
-const aiLevel = document.getElementById('ai').value; 
+let humanPlayer = document.getElementById('player').value;      //get value from user selection 
+let aiPlayer = (humanPlayer == 'X' ? 'O' : 'X');                //set aiPlayer
+let aiLevel = document.getElementById('ai').value; 
 
 function newGame() {         //resets all counters and conditions to initial value and clears the board 
     humanPlayer = document.getElementById('player').value;
     aiPlayer = (humanPlayer == 'X' ? 'O' : 'X');
     aiLevel = document.getElementById('ai').value;
     
-    gameState = true;       //to track state of game
     humanScore = 0;          //track score of human
     aiScore = 0;             //track score of AI
     gameRounds = 0;          //to keep a track of the game round
@@ -34,7 +32,6 @@ function restartGame() {           //resets the current game
 
 function setupBoard() {
     currentBoardState.fill('');
-    restartGame();
     playerChoice();
 }
 
@@ -128,14 +125,11 @@ function minimaxWithDepth(currentBoard, player, depth) {          //set up the m
 
 }
 
-function checkTie(currentBoard) {           //check for whether the game is a tie
-    if(!winConditions(currentBoard, aiPlayer) && !winConditions(currentBoard, humanPlayer)) {
-        if(currentBoard.every((cell => cell.innerText != ''))) {
-            window.alert("It's a tie!")
-            return true;
-        }   
-    }
-    return false;
+function checkTie(currentBoard) {
+    // Check if all cells are filled and no winner
+    return currentBoard.every(cell => cell !== '') &&
+           !winConditions(currentBoard, 'X') &&
+           !winConditions(currentBoard, 'O');
 }
 
 
@@ -146,7 +140,7 @@ function playerChoice() {
             if (cell.innerText === '' && !winConditions(currentBoardState, humanPlayer) && !winConditions(currentBoardState, aiPlayer)) {
                 cell.innerText = humanPlayer;
                 currentBoardState[index] = humanPlayer;
-                cell.removeEventListener('click', onCellClick);
+               // cell.removeEventListener('click', onCellClick);
                 
                 if (checkForRoundWinner() || checkTie(currentBoardState)) {
                     endRound();
