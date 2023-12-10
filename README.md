@@ -17,3 +17,5 @@ Simple game to play tic-tac-toe either against your friend or an AI overlord
  - aiChoice() - utilizes depth limited minimax algorithm and plays agains you
  - checkForRoundWinner() and checkTournamentWinner() - checks for round and tournament winner
  - gameController() - calls the setupBoard() and playerChoice();
+
+ Note: If it's tie, click on restart game :D

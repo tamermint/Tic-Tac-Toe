@@ -21,6 +21,7 @@ function newGame() {         //resets all counters and conditions to initial val
     humanScore = 0;          //track score of human
     aiScore = 0;             //track score of AI
     gameRounds = 0;          //to keep a track of the game round
+    updateScoreDisplay();
     restartGame();
 }
 
@@ -63,73 +64,71 @@ function winConditions(currentBoard, player) {       //set the winning condition
 }
 
 function minimaxWithDepth(currentBoard, player, depth) {          //set up the minimax function with depth to control difficulty
-    let availCells = currentBoard.filter(cell => cell != 'X' && cell != 'O');
+    let availCells = currentBoard.map((cell, index) => cell === '' ? index : null).filter(index => index != null);
 
     if(winConditions(currentBoard, aiPlayer)) {
-        return {score: 10};
+        return {score: 10 - depth};                    //prioritize a quick win for AI
     }
     else if(winConditions(currentBoard, humanPlayer)) {
-        return {score: -10};
+        return {score: depth - 10};                    //human winning, return a -ve score for AI which will make it avoid that move
     }
-    else if(availCells.length === 0 || depth === 0){
+    else if(availCells.length === 0){
         return {score: 0};
     }
 
-    const moves = [];              //create an empty array to store moves
+    let moves = [];              //create an empty array to store moves
 
-    for(let i = 0; i < availCells.length; i++) {
+    availCells.forEach((cellIndex) => {
         
-        var move = {};             //create a move object to store the move of each empty spot
+        let move = { index: cellIndex };             //create a move object to store the move of each empty spot
 
-        move.index = availCells[i];       //set index of the move to current empty spot
+        currentBoard[cellIndex] = player;           //try move
 
-        availCells[i] = player;           //set the empty spot to the player
 
-        if(player == humanPlayer) {
-            var result = minimaxWithDepth(currentBoard, aiPlayer, depth - 1)    //get the result of calling the minimax with depth if the opponent is human
+        if(player == aiPlayer) {
+            let result = minimaxWithDepth(currentBoard, humanPlayer, depth - 1)    //get the result of calling the minimax with depth if the opponent is human
             move.score = result.score;
         }
         else {
-            var result = minimaxWithDepth(currentBoard, humanPlayer, depth - 1)
+            let result = minimaxWithDepth(currentBoard, aiPlayer, depth - 1)
             move.score = result.score;
         }
 
         //reset the board
-        availCells[i] = move.index;
+        currentBoard[cellIndex] = '';
 
         //push the move into the moves array
         moves.push(move);
 
-    }
+    });
 
-    let bestMove;               //variable to select the best move
+    let bestMove;                   //variable to select the best move
     if(player == aiPlayer) {       //if the player is aiPlayer, use a variable to get the maximizing move for AI
         let bestScore = -Infinity;
-        for(let i = 0; i < moves.length; i++) {
-            if(moves[i].score > bestScore) {
-                bestScore = moves[i].score;
-                bestMove = i;
+        moves.forEach((move) => {
+            if(move.score > bestScore) {
+                bestScore = move.score;
+                bestMove = move;
             }
-        }
+        });
     }
     else {
         let bestScore = Infinity;   //if player is humanPlayer, use a variable to get the minimizing move for AI
-        for(let i = 0; i < moves.length; i++) {
-            if(moves[i].score < bestScore) {
-                bestScore = moves[i].score;
-                bestMove = i;
+        moves.forEach((move) => {
+            if(move.score < bestScore) {
+                bestScore = move.score;
+                bestMove = move;
             }
-        }
+        });
     }
-    return moves[bestMove];
-
+    return bestMove;
 }
 
 function checkTie(currentBoard) {
     // Check if all cells are filled and no winner
     return currentBoard.every(cell => cell !== '') &&
-           !winConditions(currentBoard, 'X') &&
-           !winConditions(currentBoard, 'O');
+           !winConditions(currentBoard, humanPlayer) &&
+           !winConditions(currentBoard, aiPlayer);
 }
 
 
@@ -140,14 +139,16 @@ function playerChoice() {
             if (cell.innerText === '' && !winConditions(currentBoardState, humanPlayer) && !winConditions(currentBoardState, aiPlayer)) {
                 cell.innerText = humanPlayer;
                 currentBoardState[index] = humanPlayer;
-               // cell.removeEventListener('click', onCellClick);
+                cell.removeEventListener('click', onCellClick);
                 
-                if (checkForRoundWinner() || checkTie(currentBoardState)) {
-                    endRound();
-                }
-                else{
-                    aiChoice();
-                }
+                setTimeout(() => {
+                    if (checkForRoundWinner() || checkTie(currentBoardState)) {
+                        endRound();
+                    }
+                    else{
+                        aiChoice();
+                    }
+                }, 100)
             }
         });
     });
@@ -155,19 +156,30 @@ function playerChoice() {
 
 function aiChoice() {
     let move;
-    if (aiLevel === 'easy') {
-        move = minimaxWithDepth(currentBoardState, aiPlayer, 1);
-    } else if (aiLevel === 'medium') {
-        move = minimaxWithDepth(currentBoardState, aiPlayer, 3);
-    } else {
-        move = minimaxWithDepth(currentBoardState, aiPlayer, 10);
-    }
+   switch(aiLevel) {
+    case 'easy':
+        move = minimaxWithDepth([...currentBoardState], aiPlayer, 1);
+        break;
+    case 'medium':
+        move = minimaxWithDepth([...currentBoardState], aiPlayer, 3);
+        break;
+    case 'overlord':
+        move = minimaxWithDepth([...currentBoardState, aiPlayer, 5]);
+        break;
+    default:
+        move = { index: Math.floor(Math.random() * 9) };    //random move for fallback
+        break;
+   }
 
     if (move && move.index !== undefined && currentBoardState[move.index] === '') {
         const cells = document.querySelectorAll('.cell');
         cells[move.index].innerText = aiPlayer;
         currentBoardState[move.index] = aiPlayer;
-        checkForRoundWinner();
+
+        setTimeout(() => {
+            checkForRoundWinner();
+        }, 100);
+       
     }
 }
 
@@ -207,6 +219,7 @@ function checkForRoundWinner() {                     //check for winner for curr
         roundWon = true;
     }
     if(roundWon) {
+        restartGame();
         updateScoreDisplay();
         endRound();
     }
