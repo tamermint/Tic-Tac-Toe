@@ -5,6 +5,8 @@ Simple game to play tic-tac-toe either against your friend or an AI overlord
 - Win 3 / 5 rounds to win the game
 ![Figma Skeleton for Web UI](./Tic-Tac-Toe.png)
 
+live url - https://tamermint.github.io/Tic-Tac-Toe/
+
 - Doco :
  - newGame() - resets the state to initial conditions
  - restartGame() - maintains the state but clears the board
